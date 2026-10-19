@@ -1,0 +1,17 @@
+@CashFlow.Consolidation_HostAddress = http://localhost:8081
+@Keycloak_TokenUrl = http://localhost:9080/realms/cashflow/protocol/openid-connect/token
+
+### Obter token (cashflow-reader: apenas leitura) — execute antes das demais requisições
+# @name login
+POST {{Keycloak_TokenUrl}}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=cashflow-api&client_secret=cashflow-api-secret&username=cashflow-reader&password=reader123
+
+### Consultar saldo consolidado por data
+GET {{CashFlow.Consolidation_HostAddress}}/api/v1/consolidation/2026-10-19
+Authorization: Bearer {{login.response.body.access_token}}
+Accept: application/json
+
+### Health check
+GET {{CashFlow.Consolidation_HostAddress}}/health
